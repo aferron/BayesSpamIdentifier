@@ -80,7 +80,7 @@ else:
 
 # separate out the labels for training
 train_labels = train_data[0:len_train, attributes - 1]
-print("Separate out the labels for training: ", end=0)
+print("Separate out the labels for training: ", end='\t')
 if np.count_nonzero(train_labels) / len_train != train_p_1:
     print("FAILED")
     print("train_labels doesn't match actual training labels")
@@ -93,8 +93,17 @@ else:
 # separate the training data into spam and not spam
 train_spam_data = train_data[np.ndarray.flatten(np.argwhere(train_labels == 1)), :]
 train_real_data = train_data[np.ndarray.flatten(np.argwhere(train_labels == 0)), :]
-print("train spam data: \n", train_spam_data)
-print("train real data: \n", train_real_data)
+print("Separate the training data into spam and not spam", end='\t')
+if np.max(train_spam_data[0:len_train - 1, attributes - 1]) > 1 or np.min(train_spam_data[0:len_train - 1, attributes - 1]) < 1: 
+    print("FAILED") 
+    quit()
+elif np.max(train_real_data[0:len_train - 1, attributes - 1]) > 0 or np.min(train_real_data[0:len_train - 1, attributes - 1]) < 0: 
+    print("FAILED") 
+    quit()
+else:
+    print("PASSED")
+
+
 
 # delete the last element of each row
 train_spam_data = np.delete(train_spam_data, attributes - 1, 1)
