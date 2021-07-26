@@ -72,31 +72,23 @@ elif train_p_1 < 0.38 or test_p_1 < 0.38:
     print ("Spam instances not evenly divided")
     quit() 
 else:
+    # print("Train P(1): ", train_p_1 , "  Train P(0): ", 1 - train_p_1)
+    # print("Test P(1): ", test_p_1, "  Test P(0): ", 1 - test_p_1)
     print("PASSED")
 
 
 
-
-# get p_0 for the training set
-train_p_0 = 1 - train_p_1
-
-# print("Spam instances evenly divided between training and test sets")
-print("P(1): ", train_p_1 , " P(0): ", train_p_0)
-
-
 # separate out the labels for training
 train_labels = train_data[0:len_train, attributes - 1]
+print("Separate out the labels for training: ", end=0)
 if np.count_nonzero(train_labels) / len_train != train_p_1:
+    print("FAILED")
     print("train_labels doesn't match actual training labels")
+    quit()
 else:
-    print("train_labels matches actual training labels")
+    print("PASSED")
 
-# toy_labels = toy_data[0:5, 3]
-# print(toy_labels)
-# print(np.take(toy_data, np.argwhere(toy_labels == 1)))
-# print (np.ndarray.flatten(np.argwhere(toy_labels ==1)))
-# print(toy_data[np.ndarray.flatten(np.argwhere(toy_labels == 1)), :])
-# print(toy_data[[2,4], :])
+
 
 # separate the training data into spam and not spam
 train_spam_data = train_data[np.ndarray.flatten(np.argwhere(train_labels == 1)), :]
