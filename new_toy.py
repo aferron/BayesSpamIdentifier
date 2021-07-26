@@ -34,11 +34,18 @@ else:
     print("PASSED")
 
 # divide the test data into data points and labels
-print("test data:\n", test_data)
 test_labels = test_data[0:len_test, attributes - 1]
 test_data = np.delete(test_data, attributes - 1, 1)
-print("test labels:\n ", test_labels)
-print("test data: \n", test_data)
+print("Creation of test labels array:", end='\t')
+if np.max(test_labels) > 1 or np.min(test_labels) < 0:
+    print("FAILED")
+else:
+    print("PASSED")
+print("Deletion of data labels for testing", end='\n')
+if len(data[0][0]) != attributes - 1:
+    print("FAILED")
+else:
+    print("PASSED")
 
 # get p_1 for both divided sets
 train_p_1 = (np.count_nonzero(data[0], axis=0) / len_train)[attributes - 1]
