@@ -68,8 +68,7 @@ if train_p_1 < 0.1 or test_p_1 < 0.1:
     quit() 
 elif train_p_1 < 0.38 or test_p_1 < 0.38:
     print("FAILED")
-    print("Percent spam in train: ", train_p_1, ",   Percent spam in test: ", test_p_1)
-    print ("Spam instances not evenly divided")
+    print("Just run it again")
     quit() 
 else:
     # print("Train P(1): ", train_p_1 , "  Train P(0): ", 1 - train_p_1)
@@ -108,6 +107,7 @@ else:
 # delete the last element of each row
 train_spam_data = np.delete(train_spam_data, attributes - 1, 1)
 train_real_data = np.delete(train_real_data, attributes - 1, 1)
+print("train spam data shape: ", np.shape(train_spam_data), " train_real_data shape: ", np.shape(train_real_data))
 print("Delete last element of each row:", end='\t')
 if len(train_spam_data[0]) != attributes - 1 or len(train_real_data[0]) != attributes - 1:
     print("FAILED")
