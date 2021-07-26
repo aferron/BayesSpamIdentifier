@@ -169,20 +169,35 @@ if train_spam_std[index] != math.sqrt(sum / size):
     quit()
 else:
     print("PASSED")
+random.seed()
+index = random.randrange(attributes - 1)
+sum = 0
+size = len(train_real_data)
+for i in range(size):
+    sum += pow((train_real_data[i][index] - train_real_means[index]), 2)
+if train_real_std[index] != math.sqrt(sum / size):
+    print("\t\t\t\t\tFAILED")
     quit()
+else:
+    print("\t\t\t\t\tPASSED")
 
 
 
 # set any standard deviation that is 0 to a non-zero value to avoid divide by zero errors
-spam_std_zeros = attributes - 1 - np.count_nonzero(train_spam_std)
-real_std_zeros = attributes - 1 - np.count_nonzero(train_real_std)
-print("zeros in spam std dev: ", spam_std_zeros, "   zeros in real std dev: ", real_std_zeros)
 train_spam_std = np.where(train_spam_std < min_std_dev, min_std_dev, train_spam_std)
 train_real_std = np.where(train_real_std < min_std_dev, min_std_dev, train_real_std)
 spam_std_zeros = attributes - 1 - np.count_nonzero(train_spam_std)
 real_std_zeros = attributes - 1 - np.count_nonzero(train_real_std)
-print("after removing zeros,")
-print("zeros in spam std dev: ", spam_std_zeros, "   zeros in real std dev: ", real_std_zeros)
+print("Set minimum standard deviation to non-zero value", end='\t')
+if spam_std_zeros != 0 or real_std_zeros != 0:
+    print("FAILED")
+    quit()
+elif np.min(train_spam_std) < min_std_dev or np.min(train_real_std) < min_std_dev:
+    print("FAILED")
+    quit()
+else:
+    print("PASSED")
+
 
 # collect real and spam arrays into a single array for standard deviation and means
 # print(train_real_means)
