@@ -197,6 +197,19 @@ elif np.min(train_spam_std) < min_std_dev or np.min(train_real_std) < min_std_de
     quit()
 else:
     print("PASSED")
+    range = np.ptp(train_spam_std, axis=0)
+    print("Range of standard deviations: ")
+    print("spam: ", range)
+    range = np.ptp(train_real_std)
+    print("Range of standard deviations: ")
+    print("real: ", range)
+    range = np.ptp(train_spam_data)
+    print("Range of spam data: ")
+    print("spam: ", range)
+    range = np.ptp(train_real_data)
+    print("Range of real data: ")
+    print("real: ", range)
+    quit()
 
 
 # collect real and spam arrays into a single array for standard deviation and means
