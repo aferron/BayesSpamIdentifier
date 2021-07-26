@@ -108,10 +108,14 @@ else:
 # delete the last element of each row
 train_spam_data = np.delete(train_spam_data, attributes - 1, 1)
 train_real_data = np.delete(train_real_data, attributes - 1, 1)
-print("train spam data: \n", train_spam_data)
-print("train real data: \n", train_real_data)
-# print("shape of train spam data: ", np.shape(train_spam_data))
-# print("shape of train real data: ", np.shape(train_real_data))
+print("Delete last element of each row:", end='\t')
+if len(train_spam_data[0]) != attributes - 1 or len(train_real_data[0]) != attributes - 1:
+    print("FAILED")
+    quit()
+else:
+    print("PASSED")
+
+
 
 # compute the mean for each of the 57 features
 train_spam_means = np.mean(train_spam_data, axis=0)
@@ -183,7 +187,7 @@ print("logs: \n", logs)
 
 # get the probability that it's real
 sum = np.sum(logs)
-p_real = math.log(train_p_0) + sum
+p_real = math.log(1 - train_p_1) + sum
 print("probability that it's real: ", p_real)
 
 
