@@ -3,7 +3,11 @@
 
 import time
 import math
+import random
 import numpy as np
+
+
+
 
 # set minimal standard deviation
 min_std_dev = 0.0001
@@ -105,6 +109,8 @@ else:
 
 
 # delete the last element of each row
+# train_spam_data is then [~900 x 57]
+# train_real_data is then [~1400 x 57]
 train_spam_data = np.delete(train_spam_data, attributes - 1, 1)
 train_real_data = np.delete(train_real_data, attributes - 1, 1)
 print("train spam data shape: ", np.shape(train_spam_data), " train_real_data shape: ", np.shape(train_real_data))
@@ -115,20 +121,57 @@ if len(train_spam_data[0]) != attributes - 1 or len(train_real_data[0]) != attri
 else:
     print("PASSED")
 
-    quit()
 
 
 # compute the mean for each of the 57 features
+# train spam and real means are then [57 x 1]
 train_spam_means = np.mean(train_spam_data, axis=0)
 train_real_means = np.mean(train_real_data, axis=0)
-print("train spam means: \n", train_spam_means)
-print("train real means: \n", train_real_means)
+print("compute the mean for each of the 57 features", end='\t')
+random.seed()
+index = random.randrange(attributes - 1)
+sum = 0
+size = len(train_spam_data)
+for i in range(size):
+    sum += train_spam_data[i][index]
+if train_spam_means[index] != sum / size:
+    print("FAILED")
+    quit()
+else:
+    print("PASSED")
+random.seed()
+index = random.randrange(attributes - 1)
+sum = 0
+size = len(train_real_data)
+for i in range(size):
+    sum += train_real_data[i][index]
+if train_real_means[index] != sum / size:
+    print("\t\t\t\tFAILED")
+    quit()
+else:
+    print("\t\t\t\tPASSED")
+
+
 
 # compute the standard deviation of the 57 features
+# standard deviation arrays are then [57 x 1]
 train_spam_std = np.std(train_spam_data, axis=0)
 train_real_std = np.std(train_real_data, axis=0)
-print("train spam std: \n", train_spam_std)
-print("train real std: \n", train_real_std)
+print("computing the standard deviation of the 57 features", end='\t')
+random.seed()
+index = random.randrange(attributes - 1)
+sum = 0
+size = len(train_spam_data)
+for i in range(size):
+    sum += pow((train_spam_data[i][index] - train_spam_means[index]), 2)
+if train_spam_std[index] != math.sqrt(sum / size):
+    print("FAILED")
+    quit()
+else:
+    print("PASSED")
+    quit()
+
+
 
 # set any standard deviation that is 0 to a non-zero value to avoid divide by zero errors
 spam_std_zeros = attributes - 1 - np.count_nonzero(train_spam_std)
