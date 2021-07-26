@@ -18,7 +18,7 @@ raw_data = np.loadtxt("spambase.data", dtype='float', delimiter=',')
 # shuffle the data
 raw_data = np.random.permutation(raw_data)
 
-train_spam = np.count_nonzero(raw_data, axis=0) / len(raw_data)
+
 
 # divide into two sets, with even division of spam instances
 data = np.split(raw_data, [int(len(raw_data) / 2)])
@@ -28,40 +28,57 @@ len_train = len(data[0])
 len_test = len(data[1])
 attributes = len(data[0][0])
 print("Even division of test and training sets", end='\t')
-if len_train - len_test > 1 or len_train - len_test < 0:
+if len_train - len_test > 1 or len_train - len_test < -1:
     print("FAILED")
+    print("len_train: ", len_train, "   len_test: ", len_test)
+    quit()
 else:
     print("PASSED")
 
-# divide the test data into data points and labels
+
+
+# divide test data into data points and labels
 test_labels = test_data[0:len_test, attributes - 1]
 test_data = np.delete(test_data, attributes - 1, 1)
 print("Creation of test labels array:", end='\t')
 if np.max(test_labels) > 1 or np.min(test_labels) < 0:
     print("FAILED")
+    quit()
 else:
     print("PASSED")
-print("Deletion of data labels for testing", end='\n')
-if len(data[0][0]) != attributes - 1:
+print("Deletion of data labels for testing", end='\t')
+if len(test_data[0]) != attributes - 1:
     print("FAILED")
+    print("length of new data field: ", len(test_data[0]))
+    quit()
 else:
     print("PASSED")
+
+
 
 # get p_1 for both divided sets
 train_p_1 = (np.count_nonzero(data[0], axis=0) / len_train)[attributes - 1]
 test_p_1 = (np.count_nonzero(data[1], axis=0) / len_test)[attributes - 1]
 
-# get p_0 for the training set
-train_p_0 = 1 - train_p_1
-
 # check that spam instances were evenly divided between the test and training sets
-print("Percent spam in train: ", train_p_1, ",   Percent spam in test: ", test_p_1)
+print("Spam instances evenly divided between test and train:", end='\t')
 if train_p_1 < 0.1 or test_p_1 < 0.1:
+    print("FAILED")
     print ("No spam in training or test set, quitting")
     quit() 
-if train_p_1 < 0.38 or test_p_1 < 0.38:
+elif train_p_1 < 0.38 or test_p_1 < 0.38:
+    print("FAILED")
+    print("Percent spam in train: ", train_p_1, ",   Percent spam in test: ", test_p_1)
     print ("Spam instances not evenly divided")
     quit() 
+else:
+    print("PASSED")
+
+
+
+
+# get p_0 for the training set
+train_p_0 = 1 - train_p_1
 
 # print("Spam instances evenly divided between training and test sets")
 print("P(1): ", train_p_1 , " P(0): ", train_p_0)
