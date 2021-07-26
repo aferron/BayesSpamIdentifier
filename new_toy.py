@@ -115,6 +115,7 @@ if len(train_spam_data[0]) != attributes - 1 or len(train_real_data[0]) != attri
 else:
     print("PASSED")
 
+    quit()
 
 
 # compute the mean for each of the 57 features
