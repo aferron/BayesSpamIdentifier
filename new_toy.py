@@ -16,11 +16,11 @@ min_std_dev = 0.0001
 start = time.perf_counter()
 
 # import the data to a numpy array
-raw_data = np.loadtxt("spambase.data", dtype='float', delimiter=',')
-# raw_data = np.array([(1,2,3,0),(4,5,6,0),(7,8,9,1),(10,11,12,1),(13,14,15,1),(16,17,18,0),(1,2,4,1),(1,3,5,1),(3,5,7,0)])
+# raw_data = np.loadtxt("spambase.data", dtype='float', delimiter=',')
+raw_data = np.array([(1,2,3,0),(2,2,2,0),(3,3,3,1),(1,1,1,1),(3,4,5,0),(3,3,3,0)])
 
 # shuffle the data
-raw_data = np.random.permutation(raw_data)
+# raw_data = np.random.permutation(raw_data)
 
 
 
@@ -28,10 +28,12 @@ raw_data = np.random.permutation(raw_data)
 data = np.split(raw_data, [int(len(raw_data) / 2)])
 train_data = data[0]
 test_data = data[1]
+print("test data\n", test_data)
+print("train data\n", train_data)
 len_train = len(data[0])
 len_test = len(data[1])
 attributes = len(data[0][0])
-print("Even division of test and training sets", end='\t')
+print("Even division of test and training sets", end='\t\t\t')
 if len_train - len_test > 1 or len_train - len_test < -1:
     print("FAILED")
     print("len_train: ", len_train, "   len_test: ", len_test)
@@ -44,13 +46,13 @@ else:
 # divide test data into data points and labels
 test_labels = test_data[0:len_test, attributes - 1]
 test_data = np.delete(test_data, attributes - 1, 1)
-print("Creation of test labels array:", end='\t')
+print("Creation of test labels array:", end='\t\t\t\t')
 if np.max(test_labels) > 1 or np.min(test_labels) < 0:
     print("FAILED")
     quit()
 else:
     print("PASSED")
-print("Deletion of data labels for testing", end='\t')
+print("Deletion of data labels for testing", end='\t\t\t')
 if len(test_data[0]) != attributes - 1:
     print("FAILED")
     print("length of new data field: ", len(test_data[0]))
@@ -70,10 +72,11 @@ if train_p_1 < 0.1 or test_p_1 < 0.1:
     print("FAILED")
     print ("No spam in training or test set, quitting")
     quit() 
-elif train_p_1 < 0.38 or test_p_1 < 0.38:
-    print("FAILED")
-    print("Just run it again")
-    quit() 
+# commenting out for testing, add back when using whole data set
+# elif train_p_1 < 0.38 or test_p_1 < 0.38:
+    # print("FAILED")
+    # print("Just run it again")
+    # quit() 
 else:
     # print("Train P(1): ", train_p_1 , "  Train P(0): ", 1 - train_p_1)
     # print("Test P(1): ", test_p_1, "  Test P(0): ", 1 - test_p_1)
@@ -83,7 +86,7 @@ else:
 
 # separate out the labels for training
 train_labels = train_data[0:len_train, attributes - 1]
-print("Separate out the labels for training: ", end='\t')
+print("Separate out the labels for training: ", end='\t\t\t')
 if np.count_nonzero(train_labels) / len_train != train_p_1:
     print("FAILED")
     print("train_labels doesn't match actual training labels")
@@ -114,7 +117,7 @@ else:
 train_spam_data = np.delete(train_spam_data, attributes - 1, 1)
 train_real_data = np.delete(train_real_data, attributes - 1, 1)
 print("train spam data shape: ", np.shape(train_spam_data), " train_real_data shape: ", np.shape(train_real_data))
-print("Delete last element of each row:", end='\t')
+print("Delete last element of each row:", end='\t\t\t')
 if len(train_spam_data[0]) != attributes - 1 or len(train_real_data[0]) != attributes - 1:
     print("FAILED")
     quit()
@@ -127,7 +130,11 @@ else:
 # train spam and real means are then [57 x 1]
 train_spam_means = np.mean(train_spam_data, axis=0)
 train_real_means = np.mean(train_real_data, axis=0)
-print("compute the mean for each of the 57 features", end='\t')
+print("compute the mean for each of the 57 features", end='\t\t')
+if np.min(train_spam_means) < 0 or np.min(train_real_means) < 0:
+    print("FAILED")
+    print("buffer overflow")
+    quit()
 random.seed()
 index = random.randrange(attributes - 1)
 sum = 0
@@ -137,8 +144,6 @@ for i in range(size):
 if train_spam_means[index] != sum / size:
     print("FAILED")
     quit()
-else:
-    print("PASSED")
 random.seed()
 index = random.randrange(attributes - 1)
 sum = 0
@@ -146,10 +151,12 @@ size = len(train_real_data)
 for i in range(size):
     sum += train_real_data[i][index]
 if train_real_means[index] != sum / size:
-    print("\t\t\t\tFAILED")
+    print("FAILED")
     quit()
 else:
-    print("\t\t\t\tPASSED")
+    print("PASSED")
+print("train spam means: ", train_spam_means)
+print("train real means: ", train_real_means)
 
 
 
@@ -158,6 +165,10 @@ else:
 train_spam_std = np.std(train_spam_data, axis=0)
 train_real_std = np.std(train_real_data, axis=0)
 print("computing the standard deviation of the 57 features", end='\t')
+if np.min(train_spam_std) < 0 or np.min(train_real_std) < 0:
+    print("FAILED")
+    print("buffer overflow")
+    quit()
 random.seed()
 index = random.randrange(attributes - 1)
 sum = 0
@@ -167,8 +178,6 @@ for i in range(size):
 if train_spam_std[index] != math.sqrt(sum / size):
     print("FAILED")
     quit()
-else:
-    print("PASSED")
 random.seed()
 index = random.randrange(attributes - 1)
 sum = 0
@@ -176,10 +185,10 @@ size = len(train_real_data)
 for i in range(size):
     sum += pow((train_real_data[i][index] - train_real_means[index]), 2)
 if train_real_std[index] != math.sqrt(sum / size):
-    print("\t\t\t\t\tFAILED")
+    print("FAILED")
     quit()
 else:
-    print("\t\t\t\t\tPASSED")
+    print("PASSED")
 
 
 
@@ -207,28 +216,22 @@ else:
     print("spam: ", range)
     range = np.ptp(train_real_data)
     print("real: ", range)
-    quit()
-
-
-# collect real and spam arrays into a single array for standard deviation and means
-# print(train_real_means)
-# print(train_spam_means)
-# train_mean = np.array([train_real_means])
-# train_mean = np.append(train_mean, [train_spam_means], axis=0)
-# print(train_mean)
-# print(train_real_std)
-# print(train_spam_std)
-# train_std = np.array([train_real_std])
-# train_std = np.append(train_std, [train_spam_std], axis=0)
-# print(train_std)
+    print("Minimums: ")
+    print("spam: ", np.min(train_spam_data))
+    print("real: ", np.min(train_real_data))
+    print("Maximums: ")
+    print("spam: ", np.max(train_spam_data))
+    print("real: ", np.max(train_real_data))
+    print("standard deviations: ")
+    print("spam:")
+    print(train_spam_std)
+    print("real:")
+    print(train_real_std)
 
 
 # subtract the mean from the data point
-# print(train_real_means)
-# train_real_means = np.append(train_real_means, 0)
-# print("\ntest data: ", test_data)
-# print("real mean: ", train_real_means)
 real_diff = np.subtract(test_data, train_real_means)
+print("\n test data:\n", test_data, "\n minus\ntrain real means:\n", train_real_means)
 print("test data - real mean: \n", real_diff)
 
 # square the difference to get the numerator for the exponent
@@ -248,16 +251,20 @@ exponential = np.exp(exponent)
 print("exponential: \n", exponential)
 
 # divide the exponential by sqrt(2 pi) * standard deviation
-real_values = np.divide(exponential, math.sqrt(2 * np.pi) * train_real_std)
-print("real values: \n", real_values)
+denominator2 = math.sqrt(2 * np.pi) * train_real_std
+p_input_0 = np.divide(exponential, denominator2) 
+print("denominator 2: ", denominator2)
+print("real values: \n", p_input_0)
 
 # take the log of all the values
-logs = np.log(real_values) 
+logs = np.log(p_input_0) 
 print("logs: \n", logs)
 
 # get the probability that it's real
-sum = np.sum(logs)
+sum = np.sum(logs, axis=1)
 p_real = math.log(1 - train_p_1) + sum
+print("sum P(xi|0): ", sum)
+print("log(P(0)): ", math.log(1 - train_p_1))
 print("probability that it's real: ", p_real)
 
 
