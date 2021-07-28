@@ -286,16 +286,34 @@ for i in range(2):
     print("shape: ", np.shape(p_i) )
 
 
+# calculate accuracy
 category = np.argmax(p_i, axis=0)
 print("category shape: ", np.shape(category))
 accuracy_check = test_labels - category
-
 accuracy = len_train - np.count_nonzero(accuracy_check)
+print("accuracy number: ", accuracy)
+print("first accuracy calculation: ", accuracy / len_test)
 
-print(accuracy)
-print(len_train)
 
-print("accuracy: ", accuracy / len_train)
+
+true_positives = np.logical_and(test_labels, category)
+true_negatives = np.logical_not(np.logical_or(test_labels, category))
+false_positives = np.logical_and(test_labels, np.logical_xor(test_labels, category))
+false_negatives = np.logical_and(category, np.logical_xor(test_labels, category))
+tp = np.count_nonzero(true_positives)
+tn = np.count_nonzero(true_negatives)
+fp = np.count_nonzero(false_positives)
+fn = np.count_nonzero(false_negatives)
+
+print("tp + tn: ", tp + tn)
+
+print("tp: ", tp, "tn: ", tn, "fp: ", fp, "fn: ", fn)
+print("accuracy: ", (tp + tn) / len_train)
+print("precision: ", tp / (fn + tp))
+print("recall: ", tp / (tp + fp))
+
+# calculate precision
+# false_positives
 
 
 print("Time elapsed: ", time.perf_counter() - start)
