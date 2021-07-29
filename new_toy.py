@@ -20,7 +20,7 @@ def plot_confusion_matrix(cm,
     misclass = 1 - accuracy
     if cmap is None:
         cmap = plt.get_cmap('Blues')
-    plt.figure(figsize=(10, 10))
+    plt.figure(figsize=(2, 2))
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
     plt.title(title)
     plt.colorbar()
@@ -351,7 +351,7 @@ print("recall: ", tp / (tp + fp))
 # plot confusion matrix
 cm = confusion_matrix(test_labels, category)
 target_names = ['0', '1']
-plot_confusion_matrix(cm, target_names)
+plot_confusion_matrix(cm, target_names, normalize=False)
 # disp = ConfusionMatrixDisplay(confusion_matrix=cm)
 # disp.plot()
 
